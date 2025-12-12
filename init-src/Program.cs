@@ -1,14 +1,104 @@
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading;
 
 Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-Console.WriteLine("🏴‍☠️ BarrerOS Phase 2 - C# Init!");
+Console.WriteLine("🏴‍☠️ BarrerOS Phase 2.9 - C# Init + Shell");
 Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 Console.WriteLine();
 Console.WriteLine("✅ .NET 10 Runtime Loaded");
 Console.WriteLine("✅ C# Code Executing on Real Filesystem");
-Console.WriteLine("✅ Phase 2 Foundation PROVEN");
+Console.WriteLine("✅ Init Process Running as PID 1");
 Console.WriteLine();
 Console.WriteLine("💙 Captain CP & Daniel Elliott");
-Console.WriteLine("📅 December 7, 2025 - BarrerOS Lives!");
+Console.WriteLine("📅 December 12, 2025 - BarrerOS Lives!");
 Console.WriteLine();
 Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+Console.WriteLine();
+
+// Test C# coreutils
+Console.WriteLine("🧪 Testing C# coreutils...");
+Console.WriteLine();
+
+Console.WriteLine("Running: pwd");
+var pwd = Process.Start("/bin/pwd", "");
+pwd?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: echo Hello from BarrerOS!");
+var echo = Process.Start("/bin/echo", "Hello from BarrerOS!");
+echo?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: ls /");
+var ls = Process.Start("/bin/ls", "/");
+ls?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: mkdir /tmp/test");
+var mkdir = Process.Start("/bin/mkdir", "/tmp/test");
+mkdir?.WaitForExit();
+
+Console.WriteLine("Running: ls /tmp");
+var lstmp = Process.Start("/bin/ls", "/tmp");
+lstmp?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+Console.WriteLine("🔄 Entering event loop... (PID 1 will never exit)");
+Console.WriteLine();
+
+// Track uptime
+var startTime = DateTime.UtcNow;
+int cycleCount = 0;
+
+// Helper to read memory info
+static void ShowMemoryInfo()
+{
+    try
+    {
+        var lines = File.ReadAllLines("/proc/meminfo");
+        var memTotal = 0L;
+        var memFree = 0L;
+        var memAvailable = 0L;
+        
+        foreach (var line in lines)
+        {
+            if (line.StartsWith("MemTotal:"))
+                memTotal = long.Parse(line.Split(' ', StringSplitOptions.RemoveEmptyEntries)[1]);
+            else if (line.StartsWith("MemFree:"))
+                memFree = long.Parse(line.Split(' ', StringSplitOptions.RemoveEmptyEntries)[1]);
+            else if (line.StartsWith("MemAvailable:"))
+                memAvailable = long.Parse(line.Split(' ', StringSplitOptions.RemoveEmptyEntries)[1]);
+        }
+        
+        var memUsed = memTotal - memFree;
+        var totalMB = memTotal / 1024;
+        var usedMB = memUsed / 1024;
+        var availMB = memAvailable / 1024;
+        
+        Console.WriteLine($"    Memory: {usedMB}MB used / {totalMB}MB total ({availMB}MB available)");
+    }
+    catch { }
+}
+
+// Main event loop - PID 1 must NEVER exit
+while (true)
+{
+    cycleCount++;
+    
+    // Every 60 seconds, show we're alive with memory stats
+    if (cycleCount % 600 == 0)
+    {
+        var uptime = DateTime.UtcNow - startTime;
+        Console.WriteLine($"[{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC] Init alive - Uptime: {uptime.TotalSeconds:F0}s");
+        ShowMemoryInfo();
+    }
+    
+    // TODO Phase 2.10: Handle signals (SIGCHLD for zombie reaping)
+    // TODO Phase 2.11: Service management
+    
+    // Sleep 100ms between cycles
+    Thread.Sleep(100);
+}

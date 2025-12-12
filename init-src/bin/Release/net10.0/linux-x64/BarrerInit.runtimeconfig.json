@@ -8,6 +8,7 @@
       }
     ],
     "configProperties": {
+      "System.Globalization.Invariant": true,
       "Microsoft.Extensions.DependencyInjection.VerifyOpenGenericServiceTrimmability": true,
       "System.ComponentModel.DefaultValueAttribute.IsSupported": false,
       "System.ComponentModel.Design.IDesignerHost.IsSupported": false,
@@ -15,7 +16,6 @@
       "System.ComponentModel.TypeDescriptor.IsComObjectDescriptorSupported": false,
       "System.Data.DataSet.XmlSerializationIsSupported": false,
       "System.Diagnostics.Tracing.EventSource.IsSupported": false,
-      "System.Globalization.Invariant": true,
       "System.Globalization.PredefinedCulturesOnly": true,
       "System.Linq.Enumerable.IsSizeOptimized": true,
       "System.Net.Security.UseManagedNtlm": false,

@@ -199,3 +199,4 @@
 /home/ssfdre38/barreros-phase2/init-src/obj/Release/net10.0/linux-x64/BarrerInit.pdb
 /home/ssfdre38/barreros-phase2/init-src/obj/Release/net10.0/linux-x64/BarrerInit.genruntimeconfig.cache
 /home/ssfdre38/barreros-phase2/init-src/obj/Release/net10.0/linux-x64/ref/BarrerInit.dll
+/home/ssfdre38/barreros-phase2/init-src/obj/Release/net10.0/linux-x64/BarrerInit.sourcelink.json
