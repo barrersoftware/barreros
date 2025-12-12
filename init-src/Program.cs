@@ -40,9 +40,45 @@ Console.WriteLine("Running: mkdir /tmp/test");
 var mkdir = Process.Start("/bin/mkdir", "/tmp/test");
 mkdir?.WaitForExit();
 
-Console.WriteLine("Running: ls /tmp");
-var lstmp = Process.Start("/bin/ls", "/tmp");
+Console.WriteLine("Running: touch /tmp/test/hello.txt");
+var touch = Process.Start("/bin/touch", "/tmp/test/hello.txt");
+touch?.WaitForExit();
+
+Console.WriteLine("Running: echo 'BarrerOS works!' | tee would write but we'll use cp");
+var echo2 = Process.Start("/bin/echo", "BarrerOS works!");
+echo2?.WaitForExit();
+
+Console.WriteLine("Running: ls /tmp/test");
+var lstmp = Process.Start("/bin/ls", "/tmp/test");
 lstmp?.WaitForExit();
+
+Console.WriteLine("Running: touch /tmp/test/file2.txt");
+var touch2 = Process.Start("/bin/touch", "/tmp/test/file2.txt");
+touch2?.WaitForExit();
+
+Console.WriteLine("Running: mv /tmp/test/file2.txt /tmp/test/renamed.txt");
+var mv = Process.Start("/bin/mv", "/tmp/test/file2.txt /tmp/test/renamed.txt");
+mv?.WaitForExit();
+
+Console.WriteLine("Running: ls /tmp/test (after mv)");
+var lstmp2 = Process.Start("/bin/ls", "/tmp/test");
+lstmp2?.WaitForExit();
+
+Console.WriteLine("Running: ps");
+var pscmd = Process.Start("/bin/ps", "");
+pscmd?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: grep 'tmp' on ls output (simulated - testing grep on file)");
+Console.WriteLine("Creating test file...");
+File.WriteAllText("/tmp/greptest.txt", "line1\ntmpfile here\nline3\nanother tmp line");
+var grepcmd = Process.Start("/bin/grep", "tmp /tmp/greptest.txt");
+grepcmd?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: chmod 755 /tmp/test");
+var chmodcmd = Process.Start("/bin/chmod", "755 /tmp/test");
+chmodcmd?.WaitForExit();
 Console.WriteLine();
 
 Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");

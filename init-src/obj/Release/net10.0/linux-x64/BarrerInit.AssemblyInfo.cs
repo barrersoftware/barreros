@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BarrerInit")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+accb52b9c4bbf68a72c760097660b1ff1762df64")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bb80e8c09def5fdb8a94e30c30cb334382b0d2d7")]
 [assembly: System.Reflection.AssemblyProductAttribute("BarrerInit")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BarrerInit")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
