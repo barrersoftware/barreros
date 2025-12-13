@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading;
 
 Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-Console.WriteLine("🏴‍☠️ BarrerOS Phase 2.11 - 24 Commands!");
+Console.WriteLine("🏴‍☠️ BarrerOS Phase 2.12 - 29 Commands!");
 Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 Console.WriteLine();
 Console.WriteLine("✅ .NET 10 Runtime Loaded");
@@ -138,6 +138,31 @@ Console.WriteLine("Testing sleep 1 second...");
 var sleeptest = Process.Start("/bin/sleep", "1");
 sleeptest?.WaitForExit();
 Console.WriteLine("Sleep completed!");
+Console.WriteLine();
+
+Console.WriteLine("Running: df");
+var dfcmd = Process.Start("/bin/df", "");
+dfcmd?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: free");
+var freecmd = Process.Start("/bin/free", "");
+freecmd?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: uname -a");
+var unamecmd = Process.Start("/bin/uname", "-a");
+unamecmd?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: du -s /tmp");
+var ducmd = Process.Start("/bin/du", "-s /tmp");
+ducmd?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: find /tmp -name '*.txt'");
+var findcmd = Process.Start("/bin/find", "/tmp -name *.txt");
+findcmd?.WaitForExit();
 Console.WriteLine();
 
 Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
