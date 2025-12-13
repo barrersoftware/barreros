@@ -2,9 +2,19 @@ using System;
 using System.IO;
 
 // BarrerOS ls - Directory listing in C#
-// Simple proof of concept
 
-var path = args.Length > 0 ? args[0] : Directory.GetCurrentDirectory();
+var longFormat = false;
+var pathIndex = 0;
+
+// Parse flags
+if (args.Length > 0 && args[0].StartsWith('-'))
+{
+    if (args[0].Contains('l'))
+        longFormat = true;
+    pathIndex = 1;
+}
+
+var path = args.Length > pathIndex ? args[pathIndex] : Directory.GetCurrentDirectory();
 
 try
 {
@@ -21,13 +31,24 @@ try
         var name = Path.GetFileName(entry);
         var isDir = Directory.Exists(entry);
         
-        if (isDir)
+        if (longFormat)
         {
-            Console.WriteLine(name + "/");
+            var info = new FileInfo(entry);
+            var perms = isDir ? "drwxr-xr-x" : "-rw-r--r--";
+            var size = isDir ? "4096" : info.Length.ToString();
+            var date = info.LastWriteTime.ToString("MMM dd HH:mm");
+            Console.WriteLine($"{perms} 1 root root {size,8} {date} {name}{(isDir ? "/" : "")}");
         }
         else
         {
-            Console.WriteLine(name);
+            if (isDir)
+            {
+                Console.WriteLine(name + "/");
+            }
+            else
+            {
+                Console.WriteLine(name);
+            }
         }
     }
     

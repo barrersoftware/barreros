@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# BarrerOS Phase 1 Init - FINAL
+# Minimal init for testing kernel boot
+# .NET will run LATER on real root filesystem
+
+# Mount essential filesystems
+mount -t proc proc /proc
+mount -t sysfs sys /sys
+mount -t devtmpfs dev /dev
+
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🏴‍☠️ BarrerOS - Phase 1 Foundation Test"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "✅ Linux Kernel: Booted"
+echo "✅ Init System: Running"
+echo "✅ Foundation: PROVEN"
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "💙 PHASE 1 COMPLETE - Ready for Phase 2"
+echo "🏴‍☠️ December 6, 2025 - BarrerOS is REAL"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "Next: Mount real root filesystem and launch .NET"
+echo ""
+echo "Press Ctrl-A X to exit QEMU"
+echo ""
+
+# Simple shell for testing
+exec /bin/sh

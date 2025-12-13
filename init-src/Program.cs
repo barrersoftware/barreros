@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading;
 
 Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-Console.WriteLine("🏴‍☠️ BarrerOS Phase 2.9 - C# Init + Shell");
+Console.WriteLine("🏴‍☠️ BarrerOS Phase 2.11 - 24 Commands!");
 Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 Console.WriteLine();
 Console.WriteLine("✅ .NET 10 Runtime Loaded");
@@ -79,6 +79,65 @@ Console.WriteLine();
 Console.WriteLine("Running: chmod 755 /tmp/test");
 var chmodcmd = Process.Start("/bin/chmod", "755 /tmp/test");
 chmodcmd?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: whoami");
+var whoami = Process.Start("/bin/whoami", "");
+whoami?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: hostname");
+var hostname = Process.Start("/bin/hostname", "");
+hostname?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: date");
+var date = Process.Start("/bin/date", "");
+date?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: head -5 /tmp/greptest.txt");
+var head = Process.Start("/bin/head", "-5 /tmp/greptest.txt");
+head?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: tail -2 /tmp/greptest.txt");
+var tail = Process.Start("/bin/tail", "-2 /tmp/greptest.txt");
+tail?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: wc /tmp/greptest.txt");
+var wc = Process.Start("/bin/wc", "/tmp/greptest.txt");
+wc?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: ln -s /tmp/test /tmp/testlink");
+var ln = Process.Start("/bin/ln", "-s /tmp/test /tmp/testlink");
+ln?.WaitForExit();
+
+Console.WriteLine("Running: ls -l /tmp/testlink");
+var lslink = Process.Start("/bin/ls", "-l /tmp/testlink");
+lslink?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: env");
+var env = Process.Start("/bin/env", "");
+env?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Running: mkdir /tmp/toremove");
+var mkdirtest = Process.Start("/bin/mkdir", "/tmp/toremove");
+mkdirtest?.WaitForExit();
+
+Console.WriteLine("Running: rmdir /tmp/toremove");
+var rmdir = Process.Start("/bin/rmdir", "/tmp/toremove");
+rmdir?.WaitForExit();
+Console.WriteLine();
+
+Console.WriteLine("Testing sleep 1 second...");
+var sleeptest = Process.Start("/bin/sleep", "1");
+sleeptest?.WaitForExit();
+Console.WriteLine("Sleep completed!");
 Console.WriteLine();
 
 Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");

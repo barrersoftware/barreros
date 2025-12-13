@@ -6,13 +6,22 @@ using System.IO;
 var numLines = 10; // default
 var fileIndex = 0;
 
-// Parse -n flag
-if (args.Length > 0 && args[0] == "-n" && args.Length > 1)
+// Parse -n flag or -NUM shorthand
+if (args.Length > 0 && args[0].StartsWith('-'))
 {
-    if (int.TryParse(args[1], out int n))
+    if (args[0] == "-n" && args.Length > 1)
     {
-        numLines = n;
-        fileIndex = 2;
+        if (int.TryParse(args[1], out int n))
+        {
+            numLines = n;
+            fileIndex = 2;
+        }
+    }
+    else if (int.TryParse(args[0].Substring(1), out int num))
+    {
+        // -2 format
+        numLines = num;
+        fileIndex = 1;
     }
 }
 
