@@ -109,6 +109,63 @@ Console.WriteLine("🌐 Testing Network Connectivity");
 Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 Console.WriteLine();
 
+// Test DNS resolution with nslookup
+Console.WriteLine("Testing DNS resolution...");
+try
+{
+    var nslookupProcess = Process.Start(new ProcessStartInfo
+    {
+        FileName = "/usr/bin/nslookup",
+        Arguments = "google.com",
+        RedirectStandardOutput = true,
+        RedirectStandardError = true,
+        UseShellExecute = false
+    });
+    
+    if (nslookupProcess != null)
+    {
+        nslookupProcess.WaitForExit(5000);
+        
+        if (nslookupProcess.HasExited)
+        {
+            var output = nslookupProcess.StandardOutput.ReadToEnd();
+            var error = nslookupProcess.StandardError.ReadToEnd();
+            
+            if (nslookupProcess.ExitCode == 0 && output.Contains("Addresses:"))
+            {
+                Console.WriteLine("✅ DNS Resolution Working!");
+                // Extract and show the IP
+                var lines = output.Split('\n');
+                foreach (var line in lines)
+                {
+                    if (line.Trim().Length > 0 && !line.Contains("Querying") && !line.Contains("Name:") && !line.Contains("Addresses:"))
+                    {
+                        Console.WriteLine($"   google.com → {line.Trim()}");
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("⚠ DNS resolution failed");
+                if (!string.IsNullOrEmpty(error))
+                    Console.WriteLine($"   Error: {error.Substring(0, Math.Min(100, error.Length))}");
+            }
+        }
+        else
+        {
+            Console.WriteLine("⚠ nslookup timeout");
+            try { nslookupProcess.Kill(); } catch { }
+        }
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"⚠ nslookup error: {ex.Message}");
+}
+
+Console.WriteLine();
+
 // Test HTTP connectivity with wget (more reliable than ping in QEMU)
 Console.WriteLine("Testing HTTP to google.com...");
 try
