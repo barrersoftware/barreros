@@ -1,0 +1,15 @@
+/home/ssfdre38/barreros-phase2/services/barrerd-net/bin/Release/net10.0/barrerd-net
+/home/ssfdre38/barreros-phase2/services/barrerd-net/bin/Release/net10.0/barrerd-net.deps.json
+/home/ssfdre38/barreros-phase2/services/barrerd-net/bin/Release/net10.0/barrerd-net.runtimeconfig.json
+/home/ssfdre38/barreros-phase2/services/barrerd-net/bin/Release/net10.0/barrerd-net.dll
+/home/ssfdre38/barreros-phase2/services/barrerd-net/bin/Release/net10.0/barrerd-net.pdb
+/home/ssfdre38/barreros-phase2/services/barrerd-net/obj/Release/net10.0/barrerd-net.GeneratedMSBuildEditorConfig.editorconfig
+/home/ssfdre38/barreros-phase2/services/barrerd-net/obj/Release/net10.0/barrerd-net.AssemblyInfoInputs.cache
+/home/ssfdre38/barreros-phase2/services/barrerd-net/obj/Release/net10.0/barrerd-net.AssemblyInfo.cs
+/home/ssfdre38/barreros-phase2/services/barrerd-net/obj/Release/net10.0/barrerd-net.csproj.CoreCompileInputs.cache
+/home/ssfdre38/barreros-phase2/services/barrerd-net/obj/Release/net10.0/barrerd-net.sourcelink.json
+/home/ssfdre38/barreros-phase2/services/barrerd-net/obj/Release/net10.0/barrerd-net.dll
+/home/ssfdre38/barreros-phase2/services/barrerd-net/obj/Release/net10.0/refint/barrerd-net.dll
+/home/ssfdre38/barreros-phase2/services/barrerd-net/obj/Release/net10.0/barrerd-net.pdb
+/home/ssfdre38/barreros-phase2/services/barrerd-net/obj/Release/net10.0/barrerd-net.genruntimeconfig.cache
+/home/ssfdre38/barreros-phase2/services/barrerd-net/obj/Release/net10.0/ref/barrerd-net.dll

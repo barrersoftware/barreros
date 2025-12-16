@@ -167,44 +167,49 @@ class NetworkManager
                 continue;
             }
 
-            // Configure ethernet interfaces directly with ip commands
+            // Configure ethernet interfaces with DHCP
             if (iface.Type == "ethernet" || iface.Type == "wireless")
             {
-                LogEvent($"Configuring {iface.Name}...");
+                LogEvent($"Configuring {iface.Name} via DHCP...");
                 
-                // Bring interface up
-                if (await RunIpCommand($"link set {iface.Name} up"))
+                // Run DHCP client
+                var dhcpProcess = Process.Start(new ProcessStartInfo
                 {
-                    LogEvent($"✓ {iface.Name} link up");
+                    FileName = "/usr/bin/dhcpc",
+                    Arguments = iface.Name,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false
+                });
+                
+                if (dhcpProcess != null)
+                {
+                    await dhcpProcess.WaitForExitAsync();
+                    
+                    var output = await dhcpProcess.StandardOutput.ReadToEndAsync();
+                    var error = await dhcpProcess.StandardError.ReadToEndAsync();
+                    
+                    if (dhcpProcess.ExitCode == 0)
+                    {
+                        // DHCP successful - log the output
+                        foreach (var line in output.Split('\n'))
+                        {
+                            if (!string.IsNullOrWhiteSpace(line))
+                                LogEvent($"  {line.Trim()}");
+                        }
+                        LogEvent($"✅ {iface.Name} configured via DHCP!");
+                    }
+                    else
+                    {
+                        LogEvent($"⚠ DHCP failed for {iface.Name}");
+                        if (!string.IsNullOrEmpty(error))
+                            LogEvent($"  Error: {error}");
+                    }
                 }
                 else
                 {
-                    LogEvent($"⚠ Failed to bring {iface.Name} up");
-                    continue;
+                    LogEvent($"⚠ Failed to start DHCP client for {iface.Name}");
                 }
-
-                // Configure IP address (QEMU default: 10.0.2.15/24)
-                if (await RunIpCommand($"addr add 10.0.2.15/24 dev {iface.Name}"))
-                {
-                    LogEvent($"✓ {iface.Name} configured with IP 10.0.2.15");
-                }
-                else
-                {
-                    LogEvent($"⚠ Failed to set IP on {iface.Name}");
-                    continue;
-                }
-
-                // Add default route via QEMU gateway
-                if (await RunIpCommand("route add default via 10.0.2.2"))
-                {
-                    LogEvent($"✓ Default route via 10.0.2.2");
-                }
-                else
-                {
-                    LogEvent($"⚠ Failed to add default route");
-                }
-
-                LogEvent($"✅ {iface.Name} network configuration complete!");
                 
                 // Only configure first ethernet interface
                 break;
