@@ -2,178 +2,215 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+
+// Mount essential filesystems first
+MountFilesystems();
 
 Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-Console.WriteLine("🏴‍☠️ BarrerOS Phase 2.12 - 29 Commands!");
+Console.WriteLine("🏴‍☠️ BarrerOS Init System v3.0");
 Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 Console.WriteLine();
 Console.WriteLine("✅ .NET 10 Runtime Loaded");
-Console.WriteLine("✅ C# Code Executing on Real Filesystem");
-Console.WriteLine("✅ Init Process Running as PID 1");
+Console.WriteLine("✅ C# Init Running as PID 1");
 Console.WriteLine();
 Console.WriteLine("💙 Captain CP & Daniel Elliott");
-Console.WriteLine("📅 December 12, 2025 - BarrerOS Lives!");
+Console.WriteLine("📅 December 16, 2025");
 Console.WriteLine();
 Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 Console.WriteLine();
 
-// Test C# coreutils
-Console.WriteLine("🧪 Testing C# coreutils...");
-Console.WriteLine();
+// Service definitions
+var services = new List<ServiceInfo>
+{
+    new ServiceInfo
+    {
+        Name = "barrerd-log",
+        Path = "/sbin/barrerd-log",
+        Description = "Logging Service",
+        Required = true
+    },
+    new ServiceInfo
+    {
+        Name = "barrerd-devmgr",
+        Path = "/sbin/barrerd-devmgr",
+        Description = "Device Manager",
+        Required = true
+    },
+    new ServiceInfo
+    {
+        Name = "barrerd-net",
+        Path = "/sbin/barrerd-net",
+        Description = "Network Manager",
+        Required = false
+    }
+};
 
-Console.WriteLine("Running: pwd");
-var pwd = Process.Start("/bin/pwd", "");
-pwd?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: echo Hello from BarrerOS!");
-var echo = Process.Start("/bin/echo", "Hello from BarrerOS!");
-echo?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: ls /");
-var ls = Process.Start("/bin/ls", "/");
-ls?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: mkdir /tmp/test");
-var mkdir = Process.Start("/bin/mkdir", "/tmp/test");
-mkdir?.WaitForExit();
-
-Console.WriteLine("Running: touch /tmp/test/hello.txt");
-var touch = Process.Start("/bin/touch", "/tmp/test/hello.txt");
-touch?.WaitForExit();
-
-Console.WriteLine("Running: echo 'BarrerOS works!' | tee would write but we'll use cp");
-var echo2 = Process.Start("/bin/echo", "BarrerOS works!");
-echo2?.WaitForExit();
-
-Console.WriteLine("Running: ls /tmp/test");
-var lstmp = Process.Start("/bin/ls", "/tmp/test");
-lstmp?.WaitForExit();
-
-Console.WriteLine("Running: touch /tmp/test/file2.txt");
-var touch2 = Process.Start("/bin/touch", "/tmp/test/file2.txt");
-touch2?.WaitForExit();
-
-Console.WriteLine("Running: mv /tmp/test/file2.txt /tmp/test/renamed.txt");
-var mv = Process.Start("/bin/mv", "/tmp/test/file2.txt /tmp/test/renamed.txt");
-mv?.WaitForExit();
-
-Console.WriteLine("Running: ls /tmp/test (after mv)");
-var lstmp2 = Process.Start("/bin/ls", "/tmp/test");
-lstmp2?.WaitForExit();
-
-Console.WriteLine("Running: ps");
-var pscmd = Process.Start("/bin/ps", "");
-pscmd?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: grep 'tmp' on ls output (simulated - testing grep on file)");
-Console.WriteLine("Creating test file...");
-File.WriteAllText("/tmp/greptest.txt", "line1\ntmpfile here\nline3\nanother tmp line");
-var grepcmd = Process.Start("/bin/grep", "tmp /tmp/greptest.txt");
-grepcmd?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: chmod 755 /tmp/test");
-var chmodcmd = Process.Start("/bin/chmod", "755 /tmp/test");
-chmodcmd?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: whoami");
-var whoami = Process.Start("/bin/whoami", "");
-whoami?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: hostname");
-var hostname = Process.Start("/bin/hostname", "");
-hostname?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: date");
-var date = Process.Start("/bin/date", "");
-date?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: head -5 /tmp/greptest.txt");
-var head = Process.Start("/bin/head", "-5 /tmp/greptest.txt");
-head?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: tail -2 /tmp/greptest.txt");
-var tail = Process.Start("/bin/tail", "-2 /tmp/greptest.txt");
-tail?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: wc /tmp/greptest.txt");
-var wc = Process.Start("/bin/wc", "/tmp/greptest.txt");
-wc?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: ln -s /tmp/test /tmp/testlink");
-var ln = Process.Start("/bin/ln", "-s /tmp/test /tmp/testlink");
-ln?.WaitForExit();
-
-Console.WriteLine("Running: ls -l /tmp/testlink");
-var lslink = Process.Start("/bin/ls", "-l /tmp/testlink");
-lslink?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: env");
-var env = Process.Start("/bin/env", "");
-env?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: mkdir /tmp/toremove");
-var mkdirtest = Process.Start("/bin/mkdir", "/tmp/toremove");
-mkdirtest?.WaitForExit();
-
-Console.WriteLine("Running: rmdir /tmp/toremove");
-var rmdir = Process.Start("/bin/rmdir", "/tmp/toremove");
-rmdir?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Testing sleep 1 second...");
-var sleeptest = Process.Start("/bin/sleep", "1");
-sleeptest?.WaitForExit();
-Console.WriteLine("Sleep completed!");
-Console.WriteLine();
-
-Console.WriteLine("Running: df");
-var dfcmd = Process.Start("/bin/df", "");
-dfcmd?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: free");
-var freecmd = Process.Start("/bin/free", "");
-freecmd?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: uname -a");
-var unamecmd = Process.Start("/bin/uname", "-a");
-unamecmd?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: du -s /tmp");
-var ducmd = Process.Start("/bin/du", "-s /tmp");
-ducmd?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("Running: find /tmp -name '*.txt'");
-var findcmd = Process.Start("/bin/find", "/tmp -name *.txt");
-findcmd?.WaitForExit();
-Console.WriteLine();
-
-Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-Console.WriteLine("🔄 Entering event loop... (PID 1 will never exit)");
-Console.WriteLine();
-
-// Track uptime
+var runningServices = new Dictionary<string, Process>();
 var startTime = DateTime.UtcNow;
+var shutdownRequested = false;
+
+// Start all services
+Console.WriteLine("🚀 Starting system services...");
+Console.WriteLine();
+
+foreach (var service in services)
+{
+    if (File.Exists(service.Path))
+    {
+        try
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = service.Path,
+                UseShellExecute = false,
+                RedirectStandardOutput = false,
+                RedirectStandardError = false
+            };
+            
+            var process = Process.Start(psi);
+            if (process != null)
+            {
+                runningServices[service.Name] = process;
+                Console.WriteLine($"✓ Started {service.Description} (PID {process.Id})");
+            }
+            else
+            {
+                Console.WriteLine($"✗ Failed to start {service.Description}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"✗ Error starting {service.Description}: {ex.Message}");
+        }
+    }
+    else
+    {
+        Console.WriteLine($"⚠ Service not found: {service.Path}");
+    }
+}
+
+Console.WriteLine();
+Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+Console.WriteLine("✅ BarrerOS boot complete!");
+Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+Console.WriteLine();
+
+// Monitor services
 int cycleCount = 0;
 
-// Helper to read memory info
+while (!shutdownRequested)
+{
+    cycleCount++;
+    
+    // Check service health every 10 seconds
+    if (cycleCount % 100 == 0)
+    {
+        var uptime = DateTime.UtcNow - startTime;
+        Console.WriteLine($"[{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC] System uptime: {uptime.TotalSeconds:F0}s");
+        
+        // Check each service
+        foreach (var service in services)
+        {
+            if (runningServices.TryGetValue(service.Name, out var process))
+            {
+                if (process.HasExited)
+                {
+                    Console.WriteLine($"⚠ Service {service.Name} exited with code {process.ExitCode}");
+                    
+                    // Restart if required
+                    if (service.Required)
+                    {
+                        Console.WriteLine($"🔄 Restarting {service.Name}...");
+                        try
+                        {
+                            var psi = new ProcessStartInfo
+                            {
+                                FileName = service.Path,
+                                UseShellExecute = false,
+                                RedirectStandardOutput = false,
+                                RedirectStandardError = false
+                            };
+                            
+                            var newProcess = Process.Start(psi);
+                            if (newProcess != null)
+                            {
+                                runningServices[service.Name] = newProcess;
+                                Console.WriteLine($"✓ Restarted {service.Name} (PID {newProcess.Id})");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"✗ Failed to restart {service.Name}: {ex.Message}");
+                        }
+                    }
+                }
+            }
+        }
+        
+        ShowMemoryInfo();
+        Console.WriteLine();
+    }
+    
+    // Sleep 100ms between cycles
+    Thread.Sleep(100);
+}
+
+// Shutdown (if ever reached)
+Console.WriteLine();
+Console.WriteLine("🛑 Shutting down...");
+
+foreach (var kvp in runningServices)
+{
+    try
+    {
+        if (!kvp.Value.HasExited)
+        {
+            Console.WriteLine($"Stopping {kvp.Key}...");
+            kvp.Value.Kill();
+            kvp.Value.WaitForExit(5000);
+        }
+    }
+    catch { }
+}
+
+Console.WriteLine("Shutdown complete");
+return 0;
+
+// Helper functions
+[DllImport("libc", SetLastError = true)]
+static extern int mount(string source, string target, string filesystemtype, ulong mountflags, string data);
+
+static void MountFilesystems()
+{
+    Console.WriteLine("🔧 Mounting essential filesystems...");
+    
+    if (!Directory.Exists("/proc"))
+        Directory.CreateDirectory("/proc");
+    if (mount("proc", "/proc", "proc", 0, null) == 0)
+        Console.WriteLine("✓ Mounted /proc");
+    else
+        Console.WriteLine("⚠ Failed to mount /proc (may already be mounted)");
+    
+    if (!Directory.Exists("/sys"))
+        Directory.CreateDirectory("/sys");
+    if (mount("sysfs", "/sys", "sysfs", 0, null) == 0)
+        Console.WriteLine("✓ Mounted /sys");
+    else
+        Console.WriteLine("⚠ Failed to mount /sys (may already be mounted)");
+    
+    if (!Directory.Exists("/dev"))
+        Directory.CreateDirectory("/dev");
+    if (mount("devtmpfs", "/dev", "devtmpfs", 0, null) == 0)
+        Console.WriteLine("✓ Mounted /dev");
+    else
+        Console.WriteLine("⚠ Failed to mount /dev (may already be mounted)");
+    
+    Console.WriteLine();
+}
+
 static void ShowMemoryInfo()
 {
     try
@@ -203,22 +240,10 @@ static void ShowMemoryInfo()
     catch { }
 }
 
-// Main event loop - PID 1 must NEVER exit
-while (true)
+class ServiceInfo
 {
-    cycleCount++;
-    
-    // Every 60 seconds, show we're alive with memory stats
-    if (cycleCount % 600 == 0)
-    {
-        var uptime = DateTime.UtcNow - startTime;
-        Console.WriteLine($"[{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC] Init alive - Uptime: {uptime.TotalSeconds:F0}s");
-        ShowMemoryInfo();
-    }
-    
-    // TODO Phase 2.10: Handle signals (SIGCHLD for zombie reaping)
-    // TODO Phase 2.11: Service management
-    
-    // Sleep 100ms between cycles
-    Thread.Sleep(100);
+    public required string Name { get; init; }
+    public required string Path { get; init; }
+    public required string Description { get; init; }
+    public bool Required { get; init; }
 }
