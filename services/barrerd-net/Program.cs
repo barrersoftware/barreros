@@ -154,24 +154,88 @@ class NetworkManager
     {
         foreach (var iface in _interfaces.Values)
         {
-            // Skip loopback
+            // Skip loopback - configure it separately
             if (iface.Name == "lo")
             {
                 await BringUpLoopback();
                 continue;
             }
 
-            // Bring interface up
-            await BringInterfaceUp(iface.Name);
+            // Skip tunnel interfaces
+            if (iface.Type == "tunnel" || iface.Type == "unknown")
+            {
+                continue;
+            }
 
-            // Try DHCP on first non-loopback interface
+            // Configure ethernet interfaces directly with ip commands
             if (iface.Type == "ethernet" || iface.Type == "wireless")
             {
-                LogEvent($"Starting DHCP on {iface.Name}...");
-                // In real implementation, would spawn dhclient or implement DHCP
-                // For now, just log the intent
-                LogEvent($"DHCP would be configured on {iface.Name}");
+                LogEvent($"Configuring {iface.Name}...");
+                
+                // Bring interface up
+                if (await RunIpCommand($"link set {iface.Name} up"))
+                {
+                    LogEvent($"✓ {iface.Name} link up");
+                }
+                else
+                {
+                    LogEvent($"⚠ Failed to bring {iface.Name} up");
+                    continue;
+                }
+
+                // Configure IP address (QEMU default: 10.0.2.15/24)
+                if (await RunIpCommand($"addr add 10.0.2.15/24 dev {iface.Name}"))
+                {
+                    LogEvent($"✓ {iface.Name} configured with IP 10.0.2.15");
+                }
+                else
+                {
+                    LogEvent($"⚠ Failed to set IP on {iface.Name}");
+                    continue;
+                }
+
+                // Add default route via QEMU gateway
+                if (await RunIpCommand("route add default via 10.0.2.2"))
+                {
+                    LogEvent($"✓ Default route via 10.0.2.2");
+                }
+                else
+                {
+                    LogEvent($"⚠ Failed to add default route");
+                }
+
+                LogEvent($"✅ {iface.Name} network configuration complete!");
+                
+                // Only configure first ethernet interface
+                break;
             }
+        }
+    }
+
+    static async Task<bool> RunIpCommand(string args)
+    {
+        try
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "/bin/ip",
+                Arguments = args,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false
+            };
+            
+            var process = Process.Start(psi);
+            if (process != null)
+            {
+                await process.WaitForExitAsync();
+                return process.ExitCode == 0;
+            }
+            return false;
+        }
+        catch
+        {
+            return false;
         }
     }
 
@@ -184,25 +248,11 @@ class NetworkManager
             // For now, just note that loopback should be configured
             // In full implementation, would use ioctl SIOCSIFFLAGS
             LogEvent("✓ Loopback interface ready (lo)");
-        }
-        catch (Exception ex)
-        {
-            LogEvent($"ERROR configuring loopback: {ex.Message}");
-        }
-    }
-
-    static async Task BringInterfaceUp(string ifaceName)
-    {
-        try
-        {
-            // For now, just log that we would bring it up
-            // In full implementation, would use ioctl SIOCSIFFLAGS
-            LogEvent($"✓ Interface {ifaceName} ready");
             await Task.CompletedTask;
         }
         catch (Exception ex)
         {
-            LogEvent($"ERROR bringing up {ifaceName}: {ex.Message}");
+            LogEvent($"ERROR configuring loopback: {ex.Message}");
         }
     }
 

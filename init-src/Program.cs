@@ -98,6 +98,67 @@ Console.WriteLine("✅ BarrerOS boot complete!");
 Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 Console.WriteLine();
 
+// Wait for network to be configured
+Console.WriteLine("⏳ Waiting for network configuration...");
+Thread.Sleep(3000);
+
+// Test network connectivity
+Console.WriteLine();
+Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+Console.WriteLine("🌐 Testing Network Connectivity");
+Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+Console.WriteLine();
+
+// Test HTTP connectivity with wget (more reliable than ping in QEMU)
+Console.WriteLine("Testing HTTP to google.com...");
+try
+{
+    var wgetProcess = Process.Start(new ProcessStartInfo
+    {
+        FileName = "/bin/busybox",
+        Arguments = "wget -O- http://google.com",
+        RedirectStandardOutput = true,
+        RedirectStandardError = true,
+        UseShellExecute = false
+    });
+    
+    if (wgetProcess != null)
+    {
+        wgetProcess.WaitForExit(10000); // Wait max 10 seconds
+        
+        if (wgetProcess.HasExited)
+        {
+            var output = wgetProcess.StandardOutput.ReadToEnd();
+            var error = wgetProcess.StandardError.ReadToEnd();
+            
+            if (wgetProcess.ExitCode == 0)
+            {
+                Console.WriteLine("✅ SUCCESS! BarrerOS can reach the internet!");
+                Console.WriteLine($"Received {output.Length} bytes from google.com");
+            }
+            else
+            {
+                Console.WriteLine($"⚠ wget exit code: {wgetProcess.ExitCode}");
+                if (!string.IsNullOrEmpty(error))
+                    Console.WriteLine($"Error: {error}");
+            }
+        }
+        else
+        {
+            wgetProcess.Kill();
+            Console.WriteLine("⚠ wget timeout after 10 seconds");
+        }
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Network test failed: {ex.Message}");
+}
+
+Console.WriteLine();
+Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+Console.WriteLine();
+
 // Monitor services
 int cycleCount = 0;
 
