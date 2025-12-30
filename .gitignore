@@ -1,5 +1,0 @@
-barreros-root.img
-*.log
-boot-*.log
-phase1/verify/
-phase1/BarrerInit/
